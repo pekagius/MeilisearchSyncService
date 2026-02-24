@@ -107,14 +107,22 @@ public abstract class BaseSyncStrategy<TDocument> : ISyncStrategy where TDocumen
         return totalSynced;
     }
 
-    private static bool IsDeletedDocument(JsonElement element)
+    /// <summary>
+    /// Check if a document is soft-deleted. Override in subclasses for different JSON casing.
+    /// Default implementation checks PascalCase "IsDeleted" property.
+    /// </summary>
+    protected virtual bool IsDeletedDocument(JsonElement element)
     {
         if (element.TryGetProperty("IsDeleted", out var isDeleted) && isDeleted.GetBoolean())
             return true;
         return false;
     }
 
-    private static string? ExtractId(JsonElement element)
+    /// <summary>
+    /// Extract the document ID. Override in subclasses for different JSON casing.
+    /// Default implementation checks PascalCase "Id" property.
+    /// </summary>
+    protected virtual string? ExtractId(JsonElement element)
     {
         if (element.TryGetProperty("Id", out var id))
             return id.GetGuid().ToString();
