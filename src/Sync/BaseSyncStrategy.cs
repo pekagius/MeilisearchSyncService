@@ -43,7 +43,7 @@ public abstract class BaseSyncStrategy<TDocument> : ISyncStrategy where TDocumen
         await using var conn = new NpgsqlConnection(_connectionString);
         await conn.OpenAsync(ct);
 
-        var sql = $"SELECT data FROM {MartenTable} WHERE (mt_deleted IS NULL OR mt_deleted = false) ORDER BY mt_last_modified ASC";
+        var sql = $"SELECT data FROM {MartenTable} ORDER BY mt_last_modified ASC";
         var rows = await conn.QueryAsync<string>(new CommandDefinition(sql, cancellationToken: ct));
         return await UpsertDocumentsAsync(rows, ct);
     }
